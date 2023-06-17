@@ -37,6 +37,26 @@ loadData().then(()=>{
 
 // load()
 
+scene("win", ({ winner }) => {
+
+    burp()
+	add([
+		text("Winner is "+ winner ),
+		anchor("center"),
+		pos(width() / 2, height() / 2),
+	])
+	add([
+		text("Press Enter to play again"),
+		anchor("center"),
+		pos(width() / 2, height()-50),
+	])
+    onKeyDown("enter",()=>{
+        
+        start();
+    })
+    // wait(10,go("game"))
+
+})
 
 scene("game", () => {
         let t1=0;
@@ -106,6 +126,16 @@ scene("game", () => {
             anchor("center"),
             "tank1"
         ])
+        const player2 = add([
+            sprite("tank2up"),   
+            pos(width()-120,height()-80),     
+            body(),
+            area(),
+            rotate(0),        
+            anchor("center"), 
+            health(tank2Health),
+            "tank2"
+        ])
         
         onKeyDown("left", () => {
             player1.use(sprite('tank1left'))
@@ -129,16 +159,6 @@ scene("game", () => {
             player1.move(0, SPEED)
             t1=0
         })
-        const player2 = add([
-            sprite("tank2up"),   
-            pos(width()-120,height()-80),     
-            body(),
-            area(),
-            rotate(0),        
-            anchor("center"), 
-            health(tank2Health),
-            "tank2"
-        ])
         
         onKeyDown("a", () => {
             player2.use(sprite('tank2left'))
@@ -330,13 +350,13 @@ scene("game", () => {
             shake(3)
             play("explosion")
             addKaboom(e.pos)
-            alert("game over! Player 2 wins")
+            // alert("game over! Player 2 wins")
         })
         on("death", "tank2",(e) => {
             shake(3)
             play("explosion")
             addKaboom(e.pos)
-            alert("game over! Player 1 wins")
+            // alert("game over! Player 1 wins")
         })
         onCollide("helth","tank1",(h,e)=>{
             e.heal(20-e.hp())
@@ -435,10 +455,17 @@ scene("game", () => {
                 healthbar2.color = rgb(255, 120, 127)
             }
         })
-    
+        player1.onDeath(() => {
+            wait(3,go("win", { winner: "tank2" ,}))
+            })
+            player2.onDeath(() => {
+                wait(3,go("win", {winner: "tank1" }))
+            })
+        })
+        
        
           
-    })
+    // })
     
     function start() {
         // Start with the "game" scene, with initial parameters
