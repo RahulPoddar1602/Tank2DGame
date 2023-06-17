@@ -7,54 +7,74 @@ kaboom({
     burp:true,
 })
 
-// ()=> ({ 
-const loadData = async ()=>{
-    await loadSprite("tank1up", "assets/player1_tank_up.png")
-    await loadSprite("tank1down", "assets/player1_tank_down.png")
-    await loadSprite("tank1left", "assets/player1_tank_left.png")
-    await loadSprite("tank1right", "assets/player1_tank_right.png")
-    await loadSprite("tank2up", "assets/player2_tank_up.png")
-    await loadSprite("tank2down", "assets/player2_tank_down.png")
-    await loadSprite("tank2left", "assets/player2_tank_left.png")
-    await loadSprite("tank2right", "assets/player2_tank_right.png")
-    await loadSprite("breakbrick", "assets/break_brick.jpg")
-    await loadSprite("solidbrick", "assets/solid_brick.jpg")
-    await loadSprite("helth", "assets/helth.png")
-    await loadSprite("Bullet","assets/enemy_bullet.png")
-    await loadSound("shoot", "assets/laser-gun.mp3")
-    await loadSound("engine", "assets/engine.mp3")
-    await loadSound("helth", "assets/helth.mp3")
-    await loadSound("pang", "assets/bulletPang.mp3")
-    await loadSound("thud", "assets/thud.mp3")
-    await loadSound("explosion", "assets/explosion.mp3")
-    await loadSound("bricks", "assets/brick-falling.mp3")
-}
-loadData().then(()=>{
-    start()
-})
-//win scene
-scene("win", ({ winner }) => {
 
-    burp()
-	add([
-		text("Winner is "+ winner ),
-		anchor("center"),
-		pos(width() / 2, height() / 2),
-	])
-	add([
-		text("Press Enter to play again"),
-		anchor("center"),
-		pos(width() / 2, height()-50),
-	])
-    onKeyDown("enter",()=>{
+
+
+// ()=> ({ 
+    const loadData = async ()=>{
+        await loadSprite("tank1up", "assets/player1_tank_up.png")
+        await loadSprite("tank1down", "assets/player1_tank_down.png")
+        await loadSprite("tank1left", "assets/player1_tank_left.png")
+        await loadSprite("tank1right", "assets/player1_tank_right.png")
+        await loadSprite("tank2up", "assets/player2_tank_up.png")
+        await loadSprite("tank2down", "assets/player2_tank_down.png")
+        await loadSprite("tank2left", "assets/player2_tank_left.png")
+        await loadSprite("tank2right", "assets/player2_tank_right.png")
+        await loadSprite("breakbrick", "assets/break_brick.jpg")
+        await loadSprite("solidbrick", "assets/solid_brick.jpg")
+        await loadSprite("helth", "assets/helth.png")
+        await loadSprite("Bullet","assets/enemy_bullet.png")
+        await loadSound("shoot", "assets/laser-gun.mp3")
+        await loadSound("engine", "assets/engine.mp3")
+        await loadSound("helth", "assets/helth.mp3")
+        await loadSound("pang", "assets/bulletPang.mp3")
+        await loadSound("thud", "assets/thud.mp3")
+        await loadSound("explosion", "assets/explosion.mp3")
+        await loadSound("bricks", "assets/brick-falling.mp3")
+    }
+    loadData().then(()=>{
+        start()
+    })
+    //win scene
+    scene("win", ({ winner }) => {
         
+        burp()
+        add([
+            text("Winner is "+ winner ),
+            anchor("center"),
+            pos(width() / 2, height() / 2),
+        ])
+        add([
+            text("Press Enter to play again"),
+            anchor("center"),
+            pos(width() / 2, height()-50),
+        ])
+        onKeyDown("enter",()=>{
+            
         start();
     })
     // wait(10,go("game"))
-
+    
 })
 //game scene
 scene("game", () => {
+    add([
+        text("Instructions\n\nMoves\n\nPlayer1\nmovement : up, down, left, right\nshooting: space bar\n\nPlayer2\nmovement : w, s, a, d\nshooting: k", { size: 20  }),
+        pos(width() / 2, height() / 2),
+        anchor("center"),
+        z(100),
+        lifespan(5),
+        fixed(),
+    ])
+    add([
+        rect(width()/2,height()/2),
+        pos(width() / 2, height() / 2),
+        anchor("center"),
+        z(99),
+        color(9,23,45),
+        lifespan(5),
+        fixed(),
+    ])
         let t1=0;
         let t2=1;
         const SPEED = 320

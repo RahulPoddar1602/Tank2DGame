@@ -6,19 +6,3 @@ body{
     justify-content: space-around;
     align-items: center;
 }
-/* canvas{
-    width:60%;
-} */
-div{
-    min-width:10%;
-    background-color: red;
-}
-li{
-    list-style-type:none;
-}
-div{
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-}
