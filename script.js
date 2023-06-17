@@ -7,54 +7,59 @@ kaboom({
     burp:true,
 })
 
-// ()=> ({
-    loadSprite("tank1up", "assets/player1_tank_up.png")
-    loadSprite("tank1down", "assets/player1_tank_down.png")
-    loadSprite("tank1left", "assets/player1_tank_left.png")
-    loadSprite("tank1right", "assets/player1_tank_right.png")
-    loadSprite("tank2up", "assets/player2_tank_up.png")
-    loadSprite("tank2down", "assets/player2_tank_down.png")
-    loadSprite("tank2left", "assets/player2_tank_left.png")
-    loadSprite("tank2right", "assets/player2_tank_right.png")
-    loadSprite("breakbrick", "assets/break_brick.jpg")
-    loadSprite("solidbrick", "assets/solid_brick.jpg")
-    loadSprite("helth", "assets/helth.png")
-    loadSprite("Bullet","assets/enemy_bullet.png")
-    loadSound("shoot", "assets/laser-gun.mp3")
-    loadSound("engine", "assets/engine.mp3")
-    loadSound("helth", "assets/helth.mp3")
-    loadSound("pang", "assets/bulletPang.mp3")
-    loadSound("thud", "assets/thud.mp3")
-    loadSound("explosion", "assets/explosion.mp3")
-    loadSound("bricks", "assets/brick-falling.mp3")
+// ()=> ({ 
+const loadData = async ()=>{
+    await loadSprite("tank1up", "assets/player1_tank_up.png")
+    await loadSprite("tank1down", "assets/player1_tank_down.png")
+    await loadSprite("tank1left", "assets/player1_tank_left.png")
+    await loadSprite("tank1right", "assets/player1_tank_right.png")
+    await loadSprite("tank2up", "assets/player2_tank_up.png")
+    await loadSprite("tank2down", "assets/player2_tank_down.png")
+    await loadSprite("tank2left", "assets/player2_tank_left.png")
+    await loadSprite("tank2right", "assets/player2_tank_right.png")
+    await loadSprite("breakbrick", "assets/break_brick.jpg")
+    await loadSprite("solidbrick", "assets/solid_brick.jpg")
+    await loadSprite("helth", "assets/helth.png")
+    await loadSprite("Bullet","assets/enemy_bullet.png")
+    await loadSound("shoot", "assets/laser-gun.mp3")
+    await loadSound("engine", "assets/engine.mp3")
+    await loadSound("helth", "assets/helth.mp3")
+    await loadSound("pang", "assets/bulletPang.mp3")
+    await loadSound("thud", "assets/thud.mp3")
+    await loadSound("explosion", "assets/explosion.mp3")
+    await loadSound("bricks", "assets/brick-falling.mp3")
+}
+loadData().then(()=>{
+    start()
+})
 // })() 
 // }
 
 // load()
 
-    let t1=0;
-    let t2=1;
-    const SPEED = 320
-    const BULLET_SPEED = 600
-    const breakHealth = 3
-    const tank1Health = 10
-    const tank2Health = 10
-    
-    const LEVELS = 
-    [
-        "=====================",
-        "=   =  =+@  @  =   =",
-        "=   =@@@@@@ @  =   =",
-        "=    @   @# @@@@@@@=",
-        "=    #   =@ @      =",
-        "=    @   @= #      =",
-        "=@@@@@@@ #@ @      =",
-        "=   =  @ @@@@@@=   =",
-        "=   =  @  @+=  =   =",
-        "=====================",
-    ]
-    
-    scene("game", () => {
+
+scene("game", () => {
+        let t1=0;
+        let t2=1;
+        const SPEED = 320
+        const BULLET_SPEED = 600
+        const breakHealth = 3
+        const tank1Health = 10
+        const tank2Health = 10
+        
+        const LEVELS = 
+        [
+            "=====================",
+            "=   =  =+@  @  =   =",
+            "=   =@@@@@@ @  =   =",
+            "=    @   @# @@@@@@@=",
+            "=    #   =@ @      =",
+            "=    @   @= #      =",
+            "=@@@@@@@ #@ @      =",
+            "=   =  @ @@@@@@=   =",
+            "=   =  @  @+=  =   =",
+            "=====================",
+        ]
         const level = addLevel(LEVELS, {
             tileWidth: 50,
             tileHeight: 50,
@@ -366,4 +371,4 @@ kaboom({
         go("game")
     }
     
-    start()
+    // start()
