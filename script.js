@@ -31,6 +31,7 @@ kaboom({
         await loadSound("thud", "assets/thud.mp3")
         await loadSound("explosion", "assets/explosion.mp3")
         await loadSound("bricks", "assets/brick-falling.mp3")
+        await loadSound("reload", "assets/reload.mp3")
     }
     loadData().then(()=>{
         start()
@@ -59,41 +60,41 @@ kaboom({
 //game scene
 scene("game", () => {
     add([
-        text("Instructions\n\nMoves\n\nPlayer1\nmovement : up, down, left, right\nshooting: space bar\n\nPlayer2\nmovement : w, s, a, d\nshooting: k", { size: 20  }),
+        text("Instructions\n\nMoves\n\nPlayer1\nmovement : up, down, left, right\nshooting: space bar\nreload: /\n\nPlayer2\nmovement : w, s, a, d\nshooting: k\nreload: r \n\nIt will take 3 seconds to reload.", { size: 20  }),
         pos(width() / 2, height() / 2),
         anchor("center"),
         z(100),
-        lifespan(5),
+        lifespan(10),
         fixed(),
     ])
     add([
-        rect(width()/2,height()/2),
+        rect(width()/2,height()),
         pos(width() / 2, height() / 2),
         anchor("center"),
         z(99),
         color(9,23,45),
-        lifespan(5),
+        lifespan(10),
         fixed(),
     ])
-        let t1=0;
-        let t2=1;
-        const SPEED = 320
-        const BULLET_SPEED = 600
-        const breakHealth = 3
-        const tank1Health = 20
-        const tank2Health = 20
-        
-        const LEVELS = 
-        [
-            "=====================",
-            "=   =  =+@  @  =   =",
-            "=   =@@@@@@ @  =   =",
-            "=    @   @# @@@@@@@=",
-            "=    #   =@ @      =",
-            "=    @   @= #      =",
-            "=@@@@@@@ #@ @      =",
-            "=   =  @ @@@@@@=   =",
-            "=   =  @  @+=  =   =",
+    let t1=0;
+    let t2=1;
+    const SPEED = 320
+    const BULLET_SPEED = 600
+    const breakHealth = 3
+    const tank1Health = 20
+    const tank2Health = 20
+    
+    const LEVELS = 
+    [
+        "=====================",
+        "=   =  =+@  @  =   =",
+        "=   =@@@@@@ @  =   =",
+        "=    @   @# @@@@@@@=",
+        "=    #   =@ @      =",
+        "=    @   @= #      =",
+        "=@@@@@@@ #@ @      =",
+        "=   =  @ @@@@@@=   =",
+        "=   =  @  @+=  =   =",
             "=====================",
         ]
         const level = addLevel(LEVELS, {
@@ -344,14 +345,14 @@ scene("game", () => {
             e.hurt(1)
             if(e.hp()==0)
             destroy(e);
-            console.log(e.hp())
+            // console.log(e.hp())
             destroy(b)
         })
         onCollide("bullet1", "tank1", (b, e) => {
             e.hurt(1)
             if(e.hp()==0)
             destroy(e);
-            console.log(e.hp())
+            // console.log(e.hp())
             destroy(b)
         })
         //tanks when hurt
@@ -411,22 +412,40 @@ scene("game", () => {
             play("pang")
             destroy(b)
         })
-        //player1 shooting
+        //player1 shooting and reloading
         onKeyPress("space", () => {
+            if(score1.value<=0)return
             spawnBullet(player1.pos.sub(0, 0),t1)
+            score1.value-=1;
+            score1.text = "Bullets Left:" + score1.value
             // burp()
             play("shoot", {
                 volume: 0.3,
                 detune: rand(-1200, 1200),
             })
         })
-        //player2 shooting
+        onKeyPress("/",async()=>{
+            play("reload")
+            await wait(3)
+            score1.value=20;
+            score1.text = "Bullets Left:" + score1.value
+        })
+        //player2 shooting and reloading
         onKeyPress("k", () => {
+            if(score2.value<=0)return
             spawnBullet1(player2.pos.sub(0, 0),t2)
+            score2.value-=1;
+            score2.text = "Bullets Left:" + score2.value
             play("shoot", {
                 volume: 0.3,
                 detune: rand(-1200, 1200),
             })
+        })
+        onKeyPress("r",async()=>{
+            play("reload")
+            await wait(3)
+            score2.value=20;
+            score2.text = "Bullets Left:" + score2.value
         })
         //Healthbars
         const healthbar = add([
@@ -486,15 +505,52 @@ scene("game", () => {
             }
         })
         //after death
-            player1.onDeath(() => {
+        player1.onDeath(() => {
             wait(3,go("win", { winner: "tank2" ,}))
-            })
-            player2.onDeath(() => {
+        })
+        player2.onDeath(() => {
                 wait(3,go("win", {winner: "tank1" }))
             })
+
+            //bullet count
+            const score1 = add([
+                text("Bullets left: 20"),
+                scale(0.5),
+                pos(10, 24),
+                z(10),
+                { value: 20 },
+            ])
+            
+            const score2 = add([
+                text("Bullets left: 20"),
+                scale(0.5),
+                z(10),
+                pos(width()-120, 24),
+                { value: 20 },
+            ])
+            add([
+                rect(190,24),
+                pos(30, 30),
+                anchor("center"),
+                z(5),
+                color(9,23,45),
+                fixed(),
+            ])
+            add([
+                rect(180,24),
+                pos(width()-30, 30),
+                anchor("center"),
+                z(5),
+                color(9,23,45),
+                fixed(),
+            ])
+            
+            // player.onCollide("coin", () => {
+                //     score.value += 1
+                // })
 })
 //start function
 function start() {
-        // Start with the "game" scene, with initial parameters
-        go("game")
+    // Start with the "game" scene, with initial parameters
+    go("game")
 }
