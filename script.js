@@ -32,11 +32,7 @@ const loadData = async ()=>{
 loadData().then(()=>{
     start()
 })
-// })() 
-// }
-
-// load()
-
+//win scene
 scene("win", ({ winner }) => {
 
     burp()
@@ -57,7 +53,7 @@ scene("win", ({ winner }) => {
     // wait(10,go("game"))
 
 })
-
+//game scene
 scene("game", () => {
         let t1=0;
         let t2=1;
@@ -136,7 +132,7 @@ scene("game", () => {
             health(tank2Health),
             "tank2"
         ])
-        
+        // player 1 movement
         onKeyDown("left", () => {
             player1.use(sprite('tank1left'))
             player1.move(-SPEED, 0)
@@ -147,19 +143,17 @@ scene("game", () => {
             player1.move(SPEED, 0)
             t1=2
         })
-        
         onKeyDown("up", () => {
             player1.use(sprite('tank1up'))
             player1.move(0, -SPEED)
             t1=1
-        })
-        
+        })      
         onKeyDown("down", () => {
             player1.use(sprite('tank1down'))
             player1.move(0, SPEED)
             t1=0
         })
-        
+        // player 2 movement
         onKeyDown("a", () => {
             player2.use(sprite('tank2left'))
             player2.move(-SPEED, 0)
@@ -170,18 +164,17 @@ scene("game", () => {
             player2.move(SPEED, 0)
             t2=2        
         })
-        
         onKeyDown("w", () => {
             player2.use(sprite('tank2up'))
             player2.move(0, -SPEED)
             t2=1
         })
-        
         onKeyDown("s", () => {
             player2.use(sprite('tank2down'))
             player2.move(0, SPEED)
             t2=0
         })
+        //player 1 bullet
         function spawnBullet(p,q) {
             if(q===0)
             add([
@@ -250,6 +243,7 @@ scene("game", () => {
                 }
             ])
         }
+        //player 2 bullet
         function spawnBullet1(p,q) {
             if(q===0)
             add([
@@ -305,6 +299,7 @@ scene("game", () => {
                 "bullet1",
             ])
         }
+        //bullet collision with bricks
         onCollide("bullet", "break", (b, e) => {
             e.hurt(1)
             if(e.hp()==0)
@@ -324,6 +319,7 @@ scene("game", () => {
             console.log(e.hp())
             destroy(b)
         })
+        //bullet collision with tanks
         onCollide("bullet", "tank2", (b, e) => {
             e.hurt(1)
             if(e.hp()==0)
@@ -338,6 +334,7 @@ scene("game", () => {
             console.log(e.hp())
             destroy(b)
         })
+        //tanks when hurt
         on("hurt", "tank2", (e) => {
             shake(1)
             play("thud")
@@ -346,6 +343,7 @@ scene("game", () => {
             shake(1)
             play("thud")
         })
+        //tanks on death
         on("death", "tank1", (e) => {
             shake(3)
             play("explosion")
@@ -358,6 +356,12 @@ scene("game", () => {
             addKaboom(e.pos)
             // alert("game over! Player 1 wins")
         })
+        //tanks collision
+        onCollide("tank1","tank2",()=>{
+            play("thud")
+            shake(2)
+        })
+        //tanks powerup
         onCollide("helth","tank1",(h,e)=>{
             e.heal(20-e.hp())
             play("helth")
@@ -368,6 +372,7 @@ scene("game", () => {
             play("helth")
             h.destroy()
         })
+        //bullet on white bricks
         onCollide("bullet", "steel", (b, e) => {
             console.log(b)
             destroy(b)
@@ -375,6 +380,7 @@ scene("game", () => {
         onCollide("bullet1", "steel", (b, e) => {
             destroy(b)
         })
+        //bullet on steel
         onCollide("bullet", "Iron", (b, e) => {
             // b.dir=-1;
             // b.move(BULLET_SPEED*b.dir,0)
@@ -385,6 +391,7 @@ scene("game", () => {
             play("pang")
             destroy(b)
         })
+        //player1 shooting
         onKeyPress("space", () => {
             spawnBullet(player1.pos.sub(0, 0),t1)
             // burp()
@@ -393,6 +400,7 @@ scene("game", () => {
                 detune: rand(-1200, 1200),
             })
         })
+        //player2 shooting
         onKeyPress("k", () => {
             spawnBullet1(player2.pos.sub(0, 0),t2)
             play("shoot", {
@@ -400,6 +408,7 @@ scene("game", () => {
                 detune: rand(-1200, 1200),
             })
         })
+        //Healthbars
         const healthbar = add([
             rect(width()/2, 20),
             pos(0, 0),
@@ -426,6 +435,7 @@ scene("game", () => {
                 },
             },
         ])
+        //hurt and heal
         player1.onHurt(() => {
             healthbar.set(player1.hp())
         })
@@ -438,7 +448,7 @@ scene("game", () => {
         player2.onHurt(() => {
             healthbar2.set(player2.hp())
         })
-    
+        //healthbar update
         healthbar.onUpdate(() => {
             if (healthbar.flash) {
                 healthbar.color = rgb(255, 255, 255)
@@ -455,21 +465,16 @@ scene("game", () => {
                 healthbar2.color = rgb(255, 120, 127)
             }
         })
-        player1.onDeath(() => {
+        //after death
+            player1.onDeath(() => {
             wait(3,go("win", { winner: "tank2" ,}))
             })
             player2.onDeath(() => {
                 wait(3,go("win", {winner: "tank1" }))
             })
-        })
-        
-       
-          
-    // })
-    
-    function start() {
+})
+//start function
+function start() {
         // Start with the "game" scene, with initial parameters
         go("game")
-    }
-    
-    // start()
+}
