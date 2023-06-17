@@ -44,8 +44,8 @@ scene("game", () => {
         const SPEED = 320
         const BULLET_SPEED = 600
         const breakHealth = 3
-        const tank1Health = 10
-        const tank2Health = 10
+        const tank1Health = 20
+        const tank2Health = 20
         
         const LEVELS = 
         [
@@ -175,6 +175,10 @@ scene("game", () => {
                 move(DOWN, BULLET_SPEED),
                 offscreen({ destroy: true }),
                 "bullet",
+                {
+                    dir:1,
+                }
+            
             ])
             else if(q===1)
             add([
@@ -188,6 +192,9 @@ scene("game", () => {
                 move(UP, BULLET_SPEED),
                 offscreen({ destroy: true }),
                 "bullet",
+                {
+                    dir:1,
+                }
             ])
             else if(q===2)
             add([
@@ -196,11 +203,14 @@ scene("game", () => {
                 area(),
                 pos(p),
                 anchor("center"),
-                color(127, 127, 255),
-                outline(4),
+                // color(127, 127, 255),
+                // outline(4),
                 move(RIGHT, BULLET_SPEED),
                 offscreen({ destroy: true }),
                 "bullet",
+                {
+                    dir:1,
+                }
             ])
             else
             add([
@@ -215,6 +225,9 @@ scene("game", () => {
                 move(LEFT, BULLET_SPEED),
                 offscreen({ destroy: true }),
                 "bullet",
+                {
+                    dir:1,
+                }
             ])
         }
         function spawnBullet1(p,q) {
@@ -319,19 +332,19 @@ scene("game", () => {
             addKaboom(e.pos)
             alert("game over! Player 2 wins")
         })
-        on("death", "tank2", (e) => {
+        on("death", "tank2",(e) => {
             shake(3)
             play("explosion")
             addKaboom(e.pos)
             alert("game over! Player 1 wins")
         })
         onCollide("helth","tank1",(h,e)=>{
-            h.destroy()
+            e.heal(20-e.hp())
             play("helth")
-            e.heal(10)
+            h.destroy()
         })
         onCollide("helth","tank2",(h,e)=>{
-            e.heal(10)
+            e.heal(20-e.hp())
             play("helth")
             h.destroy()
         })
@@ -343,6 +356,8 @@ scene("game", () => {
             destroy(b)
         })
         onCollide("bullet", "Iron", (b, e) => {
+            // b.dir=-1;
+            // b.move(BULLET_SPEED*b.dir,0)
             play("pang")
             destroy(b)
         })
@@ -360,8 +375,67 @@ scene("game", () => {
         })
         onKeyPress("k", () => {
             spawnBullet1(player2.pos.sub(0, 0),t2)
+            play("shoot", {
+                volume: 0.3,
+                detune: rand(-1200, 1200),
+            })
         })
-        
+        const healthbar = add([
+            rect(width()/2, 20),
+            pos(0, 0),
+            color(107, 201, 108),
+            fixed(),
+            {
+                max: 20,
+                set(hp) {
+                    this.width = width()/2 * hp / this.max
+                    this.flash = true
+                },
+            },
+        ])
+        const healthbar2 = add([
+            rect(width()/2, 20),
+            pos(width()/2, 0),
+            color(107, 201, 108),
+            fixed(),
+            {
+                max: 20,
+                set(hp) {
+                    this.width = width()/2 * hp / this.max
+                    this.flash = true
+                },
+            },
+        ])
+        player1.onHurt(() => {
+            healthbar.set(player1.hp())
+        })
+        player1.onHeal(() => {
+            healthbar.set(20)
+        })
+        player2.onHeal(() => {
+            healthbar2.set(20)
+        })
+        player2.onHurt(() => {
+            healthbar2.set(player2.hp())
+        })
+    
+        healthbar.onUpdate(() => {
+            if (healthbar.flash) {
+                healthbar.color = rgb(255, 255, 255)
+                healthbar.flash = false
+            } else {
+                healthbar.color = rgb(127, 255, 127)
+            }
+        })
+        healthbar2.onUpdate(() => {
+            if (healthbar2.flash) {
+                healthbar2.color = rgb(255, 0, 0)
+                healthbar2.flash = false
+            } else {
+                healthbar2.color = rgb(255, 120, 127)
+            }
+        })
+    
        
           
     })
